@@ -1,6 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const fs = require('fs');
-const economy = require('../../data/economy.json');
+const { loadEconomy, saveEconomy } = require('../utils/economy');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -16,6 +15,7 @@ module.exports = {
         .setRequired(true)),
 
   async execute(interaction) {
+    const economy = loadEconomy();
     const sender = interaction.user;
     const recipient = interaction.options.getUser('usuario');
     const amount = interaction.options.getInteger('cantidad');
@@ -42,7 +42,7 @@ module.exports = {
     // Realiza la transferencia
     economy[sender.id].coins -= amount;
     economy[recipient.id].coins += amount;
-    saveEconomy();
+    saveEconomy(economy);
 
     await interaction.reply(`✅ ASHU transferiste 💰 ${amount} BerserkerCoins a ${recipient.username}.`);
   }

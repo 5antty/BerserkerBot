@@ -2,12 +2,7 @@ const {
   Client,
   GatewayIntentBits,
   Partials,
-  Collection,
-  EmbedBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  OverwriteType,
+  Collection
 } = require("discord.js");
 
 const client = new Client({
@@ -43,13 +38,13 @@ const client = new Client({
   ],
 });
 
+const { loadEconomy, saveEconomy } = require('./utils/economy');
+
+
 const fs = require('fs');
+const path = require('path');
 const config = require("../config.json");
-const discordTranscripts = require("discord-html-transcripts");
 
-const ECONOMY_FILE = './economy.json';
-
-let economy = {};
 const cooldowns = {}; // { userId: timestamp }
 
 const COOLDOWN_TIME = 30 * 1000; // 30 segundos
@@ -66,13 +61,7 @@ for (const file of commandFiles) {
 
 
 // Cargar economía
-if (fs.existsSync(ECONOMY_FILE)) {
-  economy = JSON.parse(fs.readFileSync(ECONOMY_FILE));
-}
-
-function saveEconomy() {
-  fs.writeFileSync(ECONOMY_FILE, JSON.stringify(economy, null, 2));
-}
+let economy = loadEconomy();
 
 client.once('ready', () => {
   console.log(`✅ Bot conectado como ${client.user.tag}`);
@@ -101,7 +90,7 @@ client.on('messageCreate', async message => {
 
   // Si está en cooldown, salir
   if (cooldowns[userId] && now - cooldowns[userId] < COOLDOWN_TIME) {
-    message.reply(`En ${(now - cooldowns[userId]) / 1000} segundos vas a poder tener mas BerserkerCoins.`);
+    //message.reply(`En ${(now - cooldowns[userId]) / 1000} segundos vas a poder tener mas BerserkerCoins.`);
     return;
   }
 
@@ -117,10 +106,10 @@ client.on('messageCreate', async message => {
   const reward = Math.floor(Math.random() * 10) + 1;
   economy[userId].coins += reward;
 
-  saveEconomy();
+  saveEconomy(economy);
 
   console.log(` ${message.author.username} ganó ${reward} BerserkerCoins 🤑`);
-
+  message.reply(` ${message.author.username} ganó ${reward} BerserkerCoins 🤑`);
 });
 
 client.login(config.token);
