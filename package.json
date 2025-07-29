@@ -1,9 +1,10 @@
 {
   "name": "BerserkerBot",
   "version": "1.0.0",
-  "description": "",
+  "description": "Bot del servidor Berserkers",
   "main": "src/index.js",
   "scripts": {
+    "start": "node src/index.js",
     "commands": "node src/utils/dployCmds.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,7 +13,7 @@
   "license": "MIT",
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
-    "discord-html-transcripts": "^3.2.0",
-    "discord.js": "^14.21.0"
+    "discord.js": "^14.21.0",
+    "dotenv": "^16.6.1"
   }
 }

@@ -1,7 +1,8 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
-const { geminiAPIKey } = require("../../config.json");
-const { execute } = require('./coins');
+require('dotenv').config();
+
+const geminiAPIKey = process.env.GEMINI_API_KEY;
 
 module.exports = {
   data: new SlashCommandBuilder()

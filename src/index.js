@@ -40,10 +40,12 @@ const client = new Client({
 
 const { loadEconomy, saveEconomy } = require('./utils/economy');
 
+require('dotenv').config();
+
+const token = process.env.DISCORD_TOKEN;
 
 const fs = require('fs');
 const path = require('path');
-const config = require("../config.json");
 
 const cooldowns = {}; // { userId: timestamp }
 
@@ -117,4 +119,4 @@ client.on('messageCreate', async message => {
   }
 });
 
-client.login(config.token);
+client.login(token);
