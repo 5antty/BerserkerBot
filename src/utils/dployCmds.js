@@ -9,6 +9,7 @@ const slashCommandsFiles = fs
 
 for (const file of slashCommandsFiles) {
   const slash = require(`../cmds/${file}`);
+  console.log(`[Slash Commands] Cargando ${slash.data.name}`);
   commands.push(slash.data.toJSON());
 }
 
@@ -18,9 +19,10 @@ createSlash();
 
 async function createSlash() {
   try {
-    await rest.put(Routes.applicationCommands(config.botId), {
-      body: commands,
-    });
+    await rest.put(
+      Routes.applicationGuildCommands(config.botId, config.guildId), 
+      { body: commands }
+    );
     console.log("[Slash Commands] Agregados.");
   } catch (e) {
     console.error(e);

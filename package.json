@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "commands": "node src/utils/createSlashCommands.js",
+    "commands": "node src/utils/dployCmds.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

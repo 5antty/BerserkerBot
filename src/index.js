@@ -56,6 +56,7 @@ const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('
 
 for (const file of commandFiles) {
   const command = require(`./cmds/${file}`);
+  
   client.commands.set(command.data.name, command);
 }
 
@@ -109,7 +110,11 @@ client.on('messageCreate', async message => {
   saveEconomy(economy);
 
   console.log(` ${message.author.username} ganó ${reward} BerserkerCoins 🤑`);
-  message.reply(` ${message.author.username} ganó ${reward} BerserkerCoins 🤑`);
+  try {
+    await message.author.send(`Ganaste 💰 ${reward} BerserkerCoins por tu actividad en el chat 🤑`);
+  } catch (err) {
+    console.warn(`No pude enviarle un DM a ${message.author.tag}`);
+  }
 });
 
 client.login(config.token);
