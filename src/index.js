@@ -2,7 +2,7 @@ const {
   Client,
   GatewayIntentBits,
   Partials,
-  Collection
+  Collection,
 } = require("discord.js");
 
 const client = new Client({
@@ -38,14 +38,14 @@ const client = new Client({
   ],
 });
 
-const { loadEconomy, saveEconomy } = require('./utils/economy');
+const { loadEconomy, saveEconomy } = require("./utils/economy");
 
-require('dotenv').config();
+require("dotenv").config();
 
 const token = process.env.DISCORD_TOKEN;
 
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 const cooldowns = {}; // { userId: timestamp }
 
@@ -53,24 +53,25 @@ const COOLDOWN_TIME = 30 * 1000; // 30 segundos
 
 //Slash commands
 client.commands = new Collection();
-const commandsPath = path.join(__dirname, 'cmds');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+const commandsPath = path.join(__dirname, "cmds");
+const commandFiles = fs
+  .readdirSync(commandsPath)
+  .filter((file) => file.endsWith(".js"));
 
 for (const file of commandFiles) {
   const command = require(`./cmds/${file}`);
-  
+
   client.commands.set(command.data.name, command);
 }
-
 
 // Cargar economía
 let economy = loadEconomy();
 
-client.once('ready', () => {
-  console.log(`✅ Bot conectado como ${client.user.tag}`);
+client.once("ready", () => {
+  console.log(`✅ ESTOY IN ${client.user.tag}`);
 });
 
-client.on('interactionCreate', async interaction => {
+client.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
   const command = client.commands.get(interaction.commandName);
@@ -80,12 +81,14 @@ client.on('interactionCreate', async interaction => {
     await command.execute(interaction);
   } catch (error) {
     console.error(error);
-    await interaction.reply({ content: '⚠️ Hubo un error al ejecutar este comando.', ephemeral: true });
+    await interaction.reply({
+      content: "⚠️ Hubo un error al ejecutar este comando.",
+      ephemeral: true,
+    });
   }
 });
 
-
-client.on('messageCreate', async message => {
+client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
 
   const userId = message.author.id;
@@ -113,7 +116,9 @@ client.on('messageCreate', async message => {
 
   console.log(` ${message.author.username} ganó ${reward} BerserkerCoins 🤑`);
   try {
-    await message.author.send(`Ganaste 💰 ${reward} BerserkerCoins por tu actividad en el chat 🤑`);
+    await message.author.send(
+      `Ganaste 💰 ${reward} BerserkerCoins por tu actividad en el chat 🤑`
+    );
   } catch (err) {
     console.warn(`No pude enviarle un DM a ${message.author.tag}`);
   }
