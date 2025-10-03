@@ -22,7 +22,11 @@ module.exports = {
           { name: "paeso", value: "paeso" },
           { name: "paja", value: "paja" },
           { name: "train", value: "train" },
-          { name: "chau", value: "chau" }
+          { name: "chau", value: "chau" },
+          { name: "qver", value: "qver" },
+          { name: "tmreBallin", value: "tmreBallin" },
+          { name: "huevon", value: "huevon" },
+          { name: "oyaraa", value: "oyaraa" }
         )
     ),
   async execute(interaction) {
@@ -45,7 +49,7 @@ module.exports = {
     //Me quedo con el nombre del audio
     let audioName = interaction.options.getString("audio");
 
-    const filePath = path.join(__dirname, `../audio/${audioName}.wav`);
+    const filePath = path.join(__dirname, `../audios/${audioName}.wav`);
     const resource = createAudioResource(filePath);
     const player = createAudioPlayer();
 
