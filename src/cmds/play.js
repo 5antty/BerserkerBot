@@ -5,72 +5,56 @@ const {
   createAudioResource,
   AudioPlayerStatus,
 } = require("@discordjs/voice");
-const ytdl = require("@distube/ytdl-core");
+const path = require("path");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("play")
-    .setDescription("Reproduce audio de un video de YouTube")
+    .setName("play-out")
+    .setDescription("Reproduce un archivo de audio local")
     .addStringOption((option) =>
       option
-        .setName("url")
-        .setDescription("Busca un video de YouTube")
+        .setName("audio")
+        .setDescription("El nombre del archivo de audio (sin extensión)")
         .setRequired(true)
+        .addChoices(
+          { name: "saludo", value: "saludo" },
+          { name: "hablen", value: "hablen" },
+          { name: "paeso", value: "paeso" },
+          { name: "paja", value: "paja" },
+          { name: "train", value: "train" },
+          { name: "chau", value: "chau" },
+          { name: "qver", value: "qver" },
+          { name: "tmreBallin", value: "tmreBallin" },
+          { name: "huevon", value: "huevon" },
+          { name: "oyaraa", value: "oyaraa" }
+        )
     ),
-
   async execute(interaction) {
     const member = interaction.member;
-    const video = interaction.options.getString("url").trim();
-
-    // Validar canal de voz
-    if (!member.voice.channel) {
-      return interaction.reply({
-        content: "Debes estar en un canal de voz primero 🎧",
-        ephemeral: true,
-      });
-    }
-
-    // Validar enlace
-    const validation = ytdl.validateURL(video);
-
-    if (validation === false) {
-      return interaction.reply({
-        content: "URL no válida de YouTube ❌",
-        ephemeral: true,
-      });
-    }
-
-    await interaction.reply(
-      `Conectando al canal de voz y reproduciendo el audio 🎵`
+    const channel = interaction.guild.channels.cache.find(
+      (c) => c.name === "『🎮』Jugando-2"
     );
+    //const idCanal = 1099408420202872832;
 
-    try {
-      // Crear conexión al canal de voz
-      const connection = joinVoiceChannel({
-        channelId: member.voice.channel.id,
-        guildId: interaction.guild.id,
-        adapterCreator: interaction.guild.voiceAdapterCreator,
-      });
+    await interaction.reply("🎵 Reproduciendo audio local...");
 
-      const player = createAudioPlayer();
-      console.log("se obtiene el player");
-      // Crear stream del video
-      const source = await ytdl(video);
-      console.log("se obtiene el source");
-      // Crear recurso de audio
-      const resource = createAudioResource(source);
-      console.log("el recurso llega hasta aca");
-      player.play(resource);
-      connection.subscribe(player);
+    const connection = joinVoiceChannel({
+      channelId: channel.id,
+      guildId: interaction.guild.id,
+      adapterCreator: interaction.guild.voiceAdapterCreator,
+    });
+    //Me quedo con el nombre del audio
+    let audioName = interaction.options.getString("audio");
 
-      player.on(AudioPlayerStatus.Idle, () => {
-        connection.destroy();
-      });
+    const filePath = path.join(__dirname, `../audios/${audioName}.wav`);
+    const resource = createAudioResource(filePath);
+    const player = createAudioPlayer();
 
-      await interaction.editReply(`✅ Reproduciendo: ${video}`);
-    } catch (err) {
-      console.error(err);
-      await interaction.editReply("❌ Error al intentar reproducir el audio.");
-    }
+    player.play(resource);
+    connection.subscribe(player);
+    console.log(`Reproduciendo audio: ${audioName}`);
+    player.on(AudioPlayerStatus.Idle, () => {
+      //connection.destroy(); // salir del canal cuando termina
+    });
   },
 };

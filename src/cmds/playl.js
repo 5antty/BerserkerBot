@@ -26,7 +26,8 @@ module.exports = {
           { name: "qver", value: "qver" },
           { name: "tmreBallin", value: "tmreBallin" },
           { name: "huevon", value: "huevon" },
-          { name: "oyaraa", value: "oyaraa" }
+          { name: "oyaraa", value: "oyaraa" },
+          { name: "soyballin", value: "soyballin" }
         )
     ),
   async execute(interaction) {
