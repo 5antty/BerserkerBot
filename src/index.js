@@ -4,6 +4,7 @@ const {
   Partials,
   Collection,
 } = require("discord.js");
+const ttsexport = require("./ttsexport");
 
 const client = new Client({
   intents: [
@@ -53,10 +54,11 @@ const genAI = new GoogleGenerativeAI(geminiAPIKey);
 const randomPrompts = [
   "¿Cuál es la frase del día para los Berserkers?",
   "Contá algo curioso sobre el universo.",
-  "Danos un consejo para mejorar en Valorant.",
+  "Danos recomendaciones de videojuegos para jugar en grupo.",
   "Inventá una historia corta sobre Nova.",
   "¿Qué opinás de los reales?",
-  "Explicá algo divertido sobre la computación.",
+  "¿Qué opinás de los traidores del server?",
+  "Contá un chiste",
   "¿Qué noticia sorprendente podrías contarnos hoy?",
 ];
 
@@ -141,6 +143,49 @@ client.on("interactionCreate", async (interaction) => {
 
 client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
+  let respuesta = "";
+  if (message.content.startsWith("<@1399179707592867861>")) {
+    const prompt = message.content
+      .slice("<@1399179707592867861>".length)
+      .trim();
+
+    // Generar respuesta usando el mismo sistema que en ask.js
+    const model = genAI.getGenerativeModel({
+      model: "gemini-2.0-flash",
+      systemInstruction:
+        "Eres un bot de Discord llamado BerserkerBot, eres el bot oficial de BERSERKERS, que es el mejor servidor de la historia. Sé moderadamente sarcastico, sin insultar, en tus respuestas, excepto cuando se hable del grupo de amigos 'los reales', y trata de utilizar jerga peruana o argentina, y de vez en cuando hablas como chileno y no se entiende lo que dices.",
+    });
+
+    const result = await model.generateContent({
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+    });
+    respuesta = result.response.text();
+    await message.reply(`${respuesta}`);
+  }
+  if (
+    message.mentions.repliedUser !== null &&
+    message.mentions.repliedUser.id === "1399179707592867861"
+  ) {
+    const prompt = message.content;
+
+    // Generar respuesta usando el mismo sistema que en ask.js
+    const model = genAI.getGenerativeModel({
+      model: "gemini-2.0-flash",
+      systemInstruction:
+        "Eres un bot de Discord llamado BerserkerBot, eres el bot oficial de BERSERKERS, que es el mejor servidor de la historia. Sé moderadamente sarcastico, sin insultar, en tus respuestas, excepto cuando se hable del grupo de amigos 'los reales', y trata de utilizar jerga peruana o argentina, y de vez en cuando hablas como chileno y no se entiende lo que dices.",
+    });
+
+    const result = await model.generateContent({
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+    });
+    respuesta = result.response.text();
+    await message.reply(`${respuesta}`);
+  }
+
+  //AÑADIR TTS DE LA RESPUESTA DEL BOT
+  const member = message.member;
+  const vc = message.member.voice.channel;
+  await ttsexport.playaudio(member, member.guild, vc, respuesta);
 
   const userId = message.author.id;
   const now = Date.now();

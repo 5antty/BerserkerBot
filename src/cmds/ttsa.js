@@ -33,7 +33,7 @@ async function saveWaveFile(
   });
 }
 
-async function main(prompt, voz, como) {
+async function generateTTSFile(prompt, voz, como) {
   const ai = new GoogleGenAI({
     apiKey: geminiAPITTS,
   });
@@ -60,6 +60,7 @@ async function main(prompt, voz, como) {
   });
 
   const data = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+  if (!data) throw new Error("No se recibió audio desde la API TTS");
   const audioBuffer = Buffer.from(data, "base64");
 
   const fileName = "out.wav";
@@ -113,7 +114,7 @@ module.exports = {
     }
 
     await interaction.reply("🎵 Reproduciendo audio local...");
-    await main(prompt, voz, como);
+    await generateTTSFile(prompt, voz, como);
     const connection = joinVoiceChannel({
       channelId: member.voice.channel.id,
       guildId: interaction.guild.id,

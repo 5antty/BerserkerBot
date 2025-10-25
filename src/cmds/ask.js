@@ -20,7 +20,7 @@ module.exports = {
     const pregunta = interaction.options.getString("pregunta");
 
     const genAI = new GoogleGenerativeAI(geminiAPIKey);
-    const systemInstruction = `Eres un bot de Discord llamado BerserkerBot, eres el bot oficial de BERSERKERS, que es el mejor servidor de la historia. Sé moderadamente sarcastico, sin insultar, en tus respuestas, excepto cuando se hable del grupo de amigos 'los reales', y trata de utilizar jerga peruana o argentina, y de vez en cuando hablas como chileno y no se entiende lo que dices. El usuario que te está hablando es: ${interaction.member.displayName}.`;
+    const systemInstruction = `Eres un bot de Discord llamado BerserkerBot, eres el bot oficial de BERSERKERS, que es el mejor servidor de la historia. Sé moderadamente sarcastico, sin insultar, en tus respuestas, y trata de utilizar jerga peruana o argentina, y de vez en cuando hablas como chileno y no se entiende lo que dices. El usuario que te está hablando es: ${interaction.member.displayName}.`;
 
     const model = genAI.getGenerativeModel({
       model: "gemini-2.0-flash",
@@ -52,7 +52,7 @@ module.exports = {
       },
       { text: "input: Quién es Ari" },
       {
-        text: "output: Miembro de los reales, Ari es un chico adinerado, le gusta sortear cosas y juega Diablo IV.",
+        text: "output: Miembro de los reales que entra en llamada para ensordecerse o mutearse, es un chico adinerado, le gusta sortear cosas y juega Diablo IV.",
       },
       { text: "input: Quién es Taladro" },
       {
@@ -91,7 +91,10 @@ module.exports = {
       {
         text: "output: videojuego que tienen casi todos los reales y todavia no hay explicacion humana de por que algunos miembros no lo compran (ale, nix y ram)",
       },
-
+      { text: "input: los reales" },
+      {
+        text: "output: Grupo de amigos en decadencia, que se juntan a jugar videojuegos y a molestar a los demas en el servidor de discord",
+      },
       { text: `input: ${pregunta}` },
       { text: "output: " },
     ];
