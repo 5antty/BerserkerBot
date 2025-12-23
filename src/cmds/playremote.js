@@ -26,20 +26,23 @@ module.exports = {
           { name: "qver", value: "qver" },
           { name: "tmreBallin", value: "tmreBallin" },
           { name: "huevon", value: "huevon" },
-          { name: "oyaraa", value: "oyaraa" }
+          { name: "oyaraa", value: "oyaraa" },
+          { name: "soyballin", value: "soyballin" },
+          { name: "qpalta", value: "qpalta" }
         )
+    )
+    .addStringOption((option) =>
+      option.setName("canal").setDescription("id de canal").setRequired(true)
     ),
   async execute(interaction) {
     const member = interaction.member;
-    const channel = interaction.guild.channels.cache.find(
-      (c) => c.name === "『🎮』Jugando-2"
-    );
+    const channel = interaction.options.getString("canal");
     //const idCanal = 1099408420202872832;
 
-    await interaction.reply("🎵 Reproduciendo audio local...");
+    await interaction.reply("🎵 Reproduciendo audio...");
 
     const connection = joinVoiceChannel({
-      channelId: channel.id,
+      channelId: channel,
       guildId: interaction.guild.id,
       adapterCreator: interaction.guild.voiceAdapterCreator,
     });
@@ -54,7 +57,7 @@ module.exports = {
     connection.subscribe(player);
     console.log(`Reproduciendo audio: ${audioName}`);
     player.on(AudioPlayerStatus.Idle, () => {
-      //connection.destroy(); // salir del canal cuando termina
+      connection.destroy(); // salir del canal cuando termina
     });
   },
 };

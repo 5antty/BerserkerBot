@@ -11,15 +11,15 @@ require("dotenv").config();
 const geminiAPITTS = process.env.GEMINI_API_TTS;
 
 const voices = [
-  //{ name: "BERSERKER", value: "Enceladus" },
+  { name: "BERSERKER", value: "Enceladus" },
   { name: "mina", value: "Zephyr" },
-  //{ name: "Ballin", value: "Puck" },
-  //{ name: "negraso", value: "Sadachbia" },
-  //{ name: "empollon", value: "Fenrir" },
+  { name: "Ballin", value: "Puck" },
+  { name: "negraso", value: "Sadachbia" },
+  { name: "empollon", value: "Fenrir" },
   { name: "mama", value: "Callirrhoe" },
   { name: "egirl", value: "Leda" },
-  //{ name: "trolazo", value: "Pulcherrima" },
-  //{ name: "africano", value: "Zubenelgenubi" },
+  { name: "trolazo", value: "Pulcherrima" },
+  { name: "africano", value: "Zubenelgenubi" },
 ];
 
 async function saveWaveFile(
@@ -71,6 +71,7 @@ async function generateTTSFile(prompt, voz, como) {
   });
 
   const data = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+  if (!data) throw new Error("No se recibió audio desde la API TTS");
   const audioBuffer = Buffer.from(data, "base64");
 
   const fileName = "out.wav";
@@ -85,7 +86,7 @@ async function playaudio(member, guild, channel, prompt) {
 
   const random = Math.floor(Math.random() * voices.length);
   const voz = voices[random].value;
-  const como = "habla como si fueras una mujer seduciendo a un hombre";
+  const como = "Habla como fueras un señor peruano con plata";
   await generateTTSFile(prompt, voz, como);
 
   const connection = joinVoiceChannel({
